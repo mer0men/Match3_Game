@@ -1,0 +1,10 @@
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\bin\Debug\Match3Version20.exe
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\bin\Debug\Match3Version20.pdb
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.GameWindow.resources
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.GamePlayForm.resources
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.Properties.Resources.resources
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.csproj.GenerateResource.Cache
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.csproj.CoreCompileInputs.cache
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.exe
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.pdb
+C:\Users\Юра\Desktop\Match3Game-test\Match3Version20\obj\Debug\Match3Version20.csprojResolveAssemblyReference.cache
