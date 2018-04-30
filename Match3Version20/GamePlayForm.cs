@@ -284,7 +284,7 @@ namespace Match3Version20
             {
                 timer1.Stop();
                 TimeLeft.Text = "Time's up!";
-                MessageBox.Show(Score.Text, "Your result");
+                MessageBox.Show(Score.Text, "Game Over");
                 ExittoMenu();
             }
         }
