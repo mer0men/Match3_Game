@@ -13,14 +13,15 @@ namespace Match3Version20
 {
     public partial class GamePlayForm : Form
     {
+        public const int GRIDSIZE = 8;
+        public const int TITLESIZE = 64;
 
-        public TPieces[,] GameGrid = new TPieces[8, 8];
+        public TPieces[,] GameGrid = new TPieces[GRIDSIZE, GRIDSIZE];
         private List<Image> images = new List<Image>();
 
         Random randomizer = new Random();        
         int timeLeft = 60;
         int score;
-        Boolean suc;
 
         public GamePlayForm()
         {
@@ -33,6 +34,12 @@ namespace Match3Version20
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
             InitializeComponent();
         }
+
+        private void MyTitleInvalidate(TPieces title)
+        {
+            this.Invalidate(new Rectangle(title.x, title.y, TITLESIZE + 1, TITLESIZE + 1));
+        }
+
 
         private void Button1_Click(object sender, EventArgs e)
         {
@@ -47,17 +54,16 @@ namespace Match3Version20
         }
 
         private void GamePlayForm_Load(object sender, EventArgs e)
-        {
-            int ts = 64;
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+        {           
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     GameGrid[i, j] = new TPieces();
                     GameGrid[i, j].kind = new Random().Next(0, 4);
                     GameGrid[i, j].col = j;
                     GameGrid[i, j].row = i;
-                    GameGrid[i, j].x = 24 + j * ts;
-                    GameGrid[i, j].y = 24 + i * ts;
+                    GameGrid[i, j].x = 24 + j * TITLESIZE;
+                    GameGrid[i, j].y = 24 + i * TITLESIZE;
                     GameGrid[i, j].image = images.ElementAt(GameGrid[i, j].kind);    
                 }
 
@@ -67,10 +73,10 @@ namespace Match3Version20
         
         private void GamePlayForm_Paint(object sender, PaintEventArgs e)
         {
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
-                    if (GameGrid[i, j].changed == true)
+                    if (GameGrid[i, j].changed)
                     {
                         GameGrid[i, j].Paint_Gems(sender, e, GameGrid[i, j]);
                         GameGrid[i, j].changed = false;
@@ -92,8 +98,8 @@ namespace Match3Version20
                 Y = e.Y
             };
 
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     TPieces piece = GameGrid[i, j];
                     if ((Pointck.X < piece.x + 64 && Pointck.X > piece.x) && (Pointck.Y < piece.y + 64 && Pointck.Y > piece.y))
@@ -102,7 +108,7 @@ namespace Match3Version20
                         title.selected = true;
                         Check_Grid(i, j);
                         title.changed = true;
-                        this.Invalidate(new Rectangle(title.x, title.y, 65, 65));
+                        MyTitleInvalidate(title);
                         return;
                     }
                 }
@@ -110,33 +116,37 @@ namespace Match3Version20
 
         private void Check_Grid(int k, int l)
         {
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
-                    TPieces title = GameGrid[i, j];
-                    if (title.row != k || title.col != l)
+                    TPieces title1 = GameGrid[i, j];
+                    TPieces title2 = GameGrid[k, l];
+                  
+                    if (title1.row != k || title1.col != l)
                     {
-                         if (title.selected)
+                         if (title1.selected)
                          {
-                            if (title.row < 7 && GameGrid[title.row + 1, title.col].selected || title.row > 0 && GameGrid[title.row - 1, title.col].selected ||
-                                title.col < 7 && GameGrid[title.row, title.col + 1].selected || title.col > 0 && GameGrid[title.row, title.col - 1].selected) 
+                            if (title1.row < GRIDSIZE - 1 && GameGrid[title1.row + 1, title1.col].selected || title1.row > 0 && GameGrid[title1.row - 1, title1.col].selected ||
+                                title1.col < GRIDSIZE - 1 && GameGrid[title1.row, title1.col + 1].selected || title1.col > 0 && GameGrid[title1.row, title1.col - 1].selected) 
                             {
                                 Swap_Tiles(i, j, k, l);
-                                GameGrid[i, j].selected = false;
-                                GameGrid[i, j].changed = true;
-                                GameGrid[k, l].selected = false;
-                                GameGrid[k, l].changed = true;
-                                this.Invalidate(new Rectangle(GameGrid[k, l].x, GameGrid[k, l].y, 65, 65));
-                                this.Invalidate(new Rectangle(GameGrid[i, j].x, GameGrid[i, j].y, 65, 65));
+                                
+                                title1.selected = false;
+                                title1.changed = true;
+                                title2.selected = false;
+                                title2.changed = true;
+
+                                MyTitleInvalidate(title1);
+                                MyTitleInvalidate(title2);
                             }
                             else
                             {
-                                GameGrid[i, j].selected = false;
-                                GameGrid[i, j].changed = true;
-                                GameGrid[k, l].selected = false;
-                                GameGrid[k, l].changed = true;
-                                this.Invalidate(new Rectangle(GameGrid[k, l].x, GameGrid[k, l].y, 65, 65));
-                                this.Invalidate(new Rectangle(GameGrid[i, j].x, GameGrid[i, j].y, 65, 65));
+                                title1.selected = false;
+                                title1.changed = true;
+                                title2.selected = false;
+                                title2.changed = true;
+                                MyTitleInvalidate(title1);
+                                MyTitleInvalidate(title2);
                             }
                          }
                     }
@@ -159,9 +169,8 @@ namespace Match3Version20
 
             Matches();
 
-            if (suc == false)
-            {
-                Thread.Sleep(500);
+            if (!Matches())
+            {               
                 temp.kind = GameGrid[k, l].kind;
                 temp.image = GameGrid[k, l].image;
                 
@@ -171,19 +180,19 @@ namespace Match3Version20
                 GameGrid[i, j].kind = temp.kind;
                 GameGrid[i, j].image = temp.image;
             }
-
-            suc = false;
+            
         }
 
-        private void Matches()
+        private bool Matches()
         {
             Random rand = new Random();
             TPieces temp = new TPieces();
+            bool suc = false;
 
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
-                {
-                    if (i != 0 && i != 7)
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)          
+                {                    
+                    if (i != 0 && i != GRIDSIZE - 1)
                     {
                         if (GameGrid[i, j].kind != 5)
                         {
@@ -201,7 +210,7 @@ namespace Match3Version20
                         }
                     }
 
-                    if (j != 0 && j != 7)
+                    if (j != 0 && j != GRIDSIZE - 1)
                     {
                         if (GameGrid[i, j].kind != 5)
                         {
@@ -220,24 +229,25 @@ namespace Match3Version20
                     }   
                 }
 
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     if (GameGrid[i, j].count == 1)
                     {
-                        suc = true;
+                        suc = true;                       
                         TPieces title = GameGrid[i, j];
                         title.kind = 5;
                         title.image = images.ElementAt(5);
                         title.changed = true;
                         title.count--;
                         Score_Update();
-                        this.Invalidate(new Rectangle(title.x, title.y, 65, 65));
+                        this.Invalidate(new Rectangle(title.x, title.y, 65, 65));                        
                     }
                 }
 
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     if (GameGrid[i, j].kind == 5) 
                     {
@@ -254,23 +264,25 @@ namespace Match3Version20
 
                             GameGrid[k, j].changed = true;
                             GameGrid[k - 1, j].changed = true;
-                            this.Invalidate(new Rectangle(GameGrid[k, j].x, GameGrid[k, j].y, 65, 65));
-                            this.Invalidate(new Rectangle(GameGrid[k - 1, j].x, GameGrid[k - 1, j].y, 65, 65));
+                            MyTitleInvalidate(GameGrid[k, j]);
+                            MyTitleInvalidate(GameGrid[k - 1, j]);
                         }
                     }
                 }
 
-            for (int i = 0; i <= 7; i++)
-                for (int j = 0; j <= 7; j++)
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     if (GameGrid[i, j].kind == 5)
                     {
                         GameGrid[i, j].kind = rand.Next(0, 4);
                         GameGrid[i, j].image = images.ElementAt(GameGrid[i, j].kind);
-                        Thread.Sleep(10);
+                        Thread.Sleep(1);
                         Matches();
                     }
                 }
+
+            return suc;
         }
 
         private void Timer1_Tick(object sender, EventArgs e)
