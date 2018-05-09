@@ -34,6 +34,7 @@
             this.TimeLeft = new System.Windows.Forms.Label();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.Score = new System.Windows.Forms.Label();
+            this.Gameframes = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // ButMenuExit
@@ -69,6 +70,12 @@
             this.Score.TabIndex = 2;
             this.Score.Text = "Score:";
             // 
+            // Gameframes
+            // 
+            this.Gameframes.Enabled = true;
+            this.Gameframes.Interval = 30;
+            this.Gameframes.Tick += new System.EventHandler(this.Gameframes_Tick);
+            // 
             // GamePlayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -101,5 +108,6 @@
         private System.Windows.Forms.Label TimeLeft;
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label Score;
+        private System.Windows.Forms.Timer Gameframes;
     }
 }

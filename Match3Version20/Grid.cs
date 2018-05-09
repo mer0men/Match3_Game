@@ -11,16 +11,16 @@ namespace Match3Version20
        
     public class TPieces
     {
-        public int x, y, row, col, kind, count;
+        public int x, y, row, col, kind, count, posneedx, posneedy;
 
-        public Boolean selected, changed;
+        public Boolean Selected, Changed, Swaped;
 
         public Image image;
 
         public void Paint_Gems(object sender, PaintEventArgs e,  TPieces title)
         {
             e.Graphics.DrawImage(title.image, new Point(title.x, title.y));
-            if (title.selected == true)
+            if (title.Selected == true)
             {
                 e.Graphics.DrawRectangle(Pens.Black, title.x, title.y, 64, 64);
             }
@@ -35,8 +35,11 @@ namespace Match3Version20
             kind = 0;
             count = 0;
             image = Properties.Resources.gem1;
-            selected = false;
-            changed = true;
+            Selected = false;
+            Changed = true;
+            Swaped = false;
+            posneedx = x;
+            posneedy = y;
         }
     }
 }
