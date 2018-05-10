@@ -32,9 +32,10 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(GamePlayForm));
             this.ButMenuExit = new System.Windows.Forms.Button();
             this.TimeLeft = new System.Windows.Forms.Label();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.Score = new System.Windows.Forms.Label();
-            this.Gameframes = new System.Windows.Forms.Timer(this.components);
+            this.GameFrames = new System.Windows.Forms.Timer(this.components);
+            this.GameFrames2 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // ButMenuExit
@@ -45,7 +46,7 @@
             this.ButMenuExit.TabIndex = 0;
             this.ButMenuExit.Text = "Выход в меню";
             this.ButMenuExit.UseVisualStyleBackColor = true;
-            this.ButMenuExit.Click += new System.EventHandler(this.Button1_Click);
+            this.ButMenuExit.Click += new System.EventHandler(this.ButExitClick);
             // 
             // TimeLeft
             // 
@@ -55,11 +56,11 @@
             this.TimeLeft.Size = new System.Drawing.Size(89, 19);
             this.TimeLeft.TabIndex = 1;
             // 
-            // timer1
+            // GameTimer
             // 
-            this.timer1.Enabled = true;
-            this.timer1.Interval = 1000;
-            this.timer1.Tick += new System.EventHandler(this.Timer1_Tick);
+            this.GameTimer.Enabled = true;
+            this.GameTimer.Interval = 1000;
+            this.GameTimer.Tick += new System.EventHandler(this.GameTimerTick);
             // 
             // Score
             // 
@@ -70,11 +71,15 @@
             this.Score.TabIndex = 2;
             this.Score.Text = "Score:";
             // 
-            // Gameframes
+            // GameFrames
             // 
-            this.Gameframes.Enabled = true;
-            this.Gameframes.Interval = 30;
-            this.Gameframes.Tick += new System.EventHandler(this.Gameframes_Tick);
+            this.GameFrames.Interval = 45;
+            this.GameFrames.Tick += new System.EventHandler(this.GameFramesTick);
+            // 
+            // GameFrames2
+            // 
+            this.GameFrames2.Interval = 45;
+            this.GameFrames2.Tick += new System.EventHandler(this.GameFrames2Tick);
             // 
             // GamePlayForm
             // 
@@ -94,10 +99,10 @@
             this.Name = "GamePlayForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "GamePlay";
-            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GamePlayForm_FormClosed);
-            this.Load += new System.EventHandler(this.GamePlayForm_Load);
-            this.Paint += new System.Windows.Forms.PaintEventHandler(this.GamePlayForm_Paint);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GamePlayForm_MouseDown);
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.GamePlayFormClosed);
+            this.Load += new System.EventHandler(this.GamePlayFormLoad);
+            this.Paint += new System.Windows.Forms.PaintEventHandler(this.GamePlayFormPaint);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.GamePlayFormMouseDown);
             this.ResumeLayout(false);
 
         }
@@ -106,8 +111,9 @@
 
         private System.Windows.Forms.Button ButMenuExit;
         private System.Windows.Forms.Label TimeLeft;
-        private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Timer GameTimer;
         private System.Windows.Forms.Label Score;
-        private System.Windows.Forms.Timer Gameframes;
+        private System.Windows.Forms.Timer GameFrames;
+        private System.Windows.Forms.Timer GameFrames2;
     }
 }

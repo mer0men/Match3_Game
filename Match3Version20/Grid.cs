@@ -11,9 +11,9 @@ namespace Match3Version20
        
     public class TPieces
     {
-        public int x, y, row, col, kind, count, posneedx, posneedy;
+        public int x, y, row, col, kind, posneedx, posneedy;
 
-        public Boolean Selected, Changed, Swaped;
+        public bool Selected, Swaped, Count;
 
         public Image image;
 
@@ -33,10 +33,9 @@ namespace Match3Version20
             row = 0;
             col = 0;
             kind = 0;
-            count = 0;
+            Count = false;
             image = Properties.Resources.gem1;
             Selected = false;
-            Changed = true;
             Swaped = false;
             posneedx = x;
             posneedy = y;

@@ -8,13 +8,13 @@ using System.Text;
 using System.Threading;
 using System.Windows.Forms;
 
-
 namespace Match3Version20
 {
     public partial class GamePlayForm : Form
     {
         public const int GRIDSIZE = 8;
         public const int TITLESIZE = 64;
+        public const int TITLESPEED = 4;
 
         public TPieces[,] GameGrid = new TPieces[GRIDSIZE, GRIDSIZE];
         private List<Image> images = new List<Image>();
@@ -32,6 +32,7 @@ namespace Match3Version20
             images.Add(Properties.Resources.gem5);
             images.Add(Properties.Resources.x);
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
+            this.ResizeRedraw = true;
             InitializeComponent();
         }
 
@@ -40,58 +41,53 @@ namespace Match3Version20
             this.Invalidate(new Rectangle(title.x, title.y, TITLESIZE + 1, TITLESIZE + 1));
         }
         
-        private void Button1_Click(object sender, EventArgs e)
+        private void ButExitClick(object sender, EventArgs e)
         {
-            ExittoMenu();
+            ExitToMenu();
         }
 
-        private void ExittoMenu()
+        private void ExitToMenu()
         {
             GameWindow Sform = new GameWindow();
             Sform.Show();
             this.Hide();
         }
 
-        private void GamePlayForm_Load(object sender, EventArgs e)
+        private void GamePlayFormLoad(object sender, EventArgs e)
         {           
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
-                    
                     GameGrid[i, j] = new TPieces();
-                    GameGrid[i, j].kind = new Random().Next(0, 4);
+                    GameGrid[i, j].kind = randomizer.Next(0, 4);
                     GameGrid[i, j].col = j;
                     GameGrid[i, j].row = i;
                     GameGrid[i, j].x = 24 + j * TITLESIZE;
-                    GameGrid[i, j].y = 24 + i * TITLESIZE;
+                    GameGrid[i, j].y = 24;
                     GameGrid[i, j].image = images.ElementAt(GameGrid[i, j].kind);
-                    GameGrid[i, j].posneedx = GameGrid[i, j].x;
-                    GameGrid[i, j].posneedy = GameGrid[i, j].y;
+                    GameGrid[i, j].posneedx = 24 + j * TITLESIZE;
+                    GameGrid[i, j].posneedy = 24 + i * TITLESIZE;
+                    MyTitleInvalidate(GameGrid[i, j]);
                 }
-
-            this.Invalidate();           
+            this.Invalidate();  
             Matches();
-        }
+        }      
         
-        private void GamePlayForm_Paint(object sender, PaintEventArgs e)
+        private void GamePlayFormPaint(object sender, PaintEventArgs e)
         {
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
-                    if (GameGrid[i, j].Changed)
-                    {
-                        GameGrid[i, j].Paint_Gems(sender, e, GameGrid[i, j]);
-                        GameGrid[i, j].Changed = false;
-                    }
+                     GameGrid[i, j].Paint_Gems(sender, e, GameGrid[i, j]);  
                 }
         }
 
-        private void GamePlayForm_FormClosed(object sender, FormClosedEventArgs e)
+        private void GamePlayFormClosed(object sender, FormClosedEventArgs e)
         {
-            ExittoMenu();
+            ExitToMenu();
         }
 
-        private void GamePlayForm_MouseDown(object sender, MouseEventArgs e)
+        private void GamePlayFormMouseDown(object sender, MouseEventArgs e)
         {
             Point pointck;
             pointck = new Point
@@ -104,19 +100,19 @@ namespace Match3Version20
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     TPieces piece = GameGrid[i, j];
-                    if ((pointck.X < piece.x + 64 && pointck.X > piece.x) && (pointck.Y < piece.y + 64 && pointck.Y > piece.y))
+                    if ((pointck.X < piece.x + 64 && pointck.X > piece.x) &&
+                        (pointck.Y < piece.y + 64 && pointck.Y > piece.y))
                     {
                         TPieces title = GameGrid[i, j];
                         title.Selected = true;
-                        Check_Grid(i, j);
-                        title.Changed = true;
+                        CheckGrid(i, j);
                         MyTitleInvalidate(title);
                         return;
                     }
                 }
         }
 
-        private void Check_Grid(int k, int l)
+        private void CheckGrid(int k, int l)
         {
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
@@ -128,15 +124,15 @@ namespace Match3Version20
                     {
                          if (title1.Selected)
                          {
-                            if (title1.row < GRIDSIZE - 1 && GameGrid[title1.row + 1, title1.col].Selected || title1.row > 0 && GameGrid[title1.row - 1, title1.col].Selected ||
-                                title1.col < GRIDSIZE - 1 && GameGrid[title1.row, title1.col + 1].Selected || title1.col > 0 && GameGrid[title1.row, title1.col - 1].Selected) 
+                            if (title1.row < GRIDSIZE - 1 && GameGrid[title1.row + 1, title1.col].Selected ||
+                                title1.row > 0 && GameGrid[title1.row - 1, title1.col].Selected ||
+                                title1.col < GRIDSIZE - 1 && GameGrid[title1.row, title1.col + 1].Selected ||
+                                title1.col > 0 && GameGrid[title1.row, title1.col - 1].Selected) 
                             {
-                                Swap_Tiles(i, j, k, l, true);
+                                SwapTiles(i, j, k, l, true);      
                                 
                                 title1.Selected = false;
-                                title1.Changed = true;
                                 title2.Selected = false;
-                                title2.Changed = true;
 
                                 MyTitleInvalidate(title1);
                                 MyTitleInvalidate(title2);
@@ -144,9 +140,8 @@ namespace Match3Version20
                             else
                             {
                                 title1.Selected = false;
-                                title1.Changed = true;
                                 title2.Selected = false;
-                                title2.Changed = true;
+
                                 MyTitleInvalidate(title1);
                                 MyTitleInvalidate(title2);
                             }
@@ -155,26 +150,24 @@ namespace Match3Version20
                 }
         }
 
-        private void Swap_Tiles(int i, int j, int k, int l, bool firstswap)
+        private void SwapTiles(int i, int j, int k, int l, bool firstswap)
         {
             TPieces temp = GameGrid[k, l];         
 
             GameGrid[k, l] = GameGrid[i, j];
             GameGrid[i, j] = temp;
 
-            TPieces temp1 = new TPieces()
+            TPieces temp1 = new TPieces
             {
                 col = GameGrid[k, l].col,
-                row = GameGrid[k, l].row,            
-                
-            };                       
+                row = GameGrid[k, l].row
+            };
 
             GameGrid[k, l].col = GameGrid[i, j].col;
             GameGrid[k, l].row = GameGrid[i, j].row;
 
             GameGrid[i, j].col = temp1.col;
             GameGrid[i, j].row = temp1.row;
-
 
             GameGrid[k, l].posneedx = GameGrid[i, j].x;
             GameGrid[k, l].posneedy = GameGrid[i, j].y;
@@ -187,27 +180,7 @@ namespace Match3Version20
                 GameGrid[i, j].Swaped = true;
             }
             
-            Gameframes.Start();   
-
-           /* GameGrid[k, l].kind = GameGrid[i, j].kind;
-            GameGrid[k, l].image = GameGrid[i, j].image;
-
-            GameGrid[i, j].kind = temp.kind;
-            GameGrid[i, j].image = temp.image;
-
-            //
-
-            if (!Matches())
-            {               
-                temp.kind = GameGrid[k, l].kind;
-                temp.image = GameGrid[k, l].image;
-                
-                GameGrid[k, l].kind = GameGrid[i, j].kind;
-                GameGrid[k, l].image = GameGrid[i, j].image;
-
-                GameGrid[i, j].kind = temp.kind;
-                GameGrid[i, j].image = temp.image;
-            }*/
+            GameFrames.Start();   
         }
 
         private bool TitleMoves()
@@ -217,23 +190,17 @@ namespace Match3Version20
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                  for (int j = 0; j <= GRIDSIZE - 1; j++)
                  {
-
-
                      if (GameGrid[i, j].posneedx != GameGrid[i, j].x)
                      {
                          if ((GameGrid[i, j].posneedx - GameGrid[i, j].x) > 0)
                          {
-                             GameGrid[i, j].x += 2;
-                             GameGrid[i, j].Changed = true;
+                             GameGrid[i, j].x += TITLESPEED;
                              movefinish = true;
-                             MyTitleInvalidate(GameGrid[i, j]);
                          }
                          else
                          {
-                             GameGrid[i, j].x -= 2;
-                             GameGrid[i, j].Changed = true;
+                             GameGrid[i, j].x -= TITLESPEED;
                              movefinish = true;
-                             MyTitleInvalidate(GameGrid[i, j]);
                          }
                      }
 
@@ -241,125 +208,141 @@ namespace Match3Version20
                      {
                          if ((GameGrid[i, j].posneedy - GameGrid[i, j].y) > 0)
                          {
-                             GameGrid[i, j].y += 2;
-                             GameGrid[i, j].Changed = true;
+                             GameGrid[i, j].y += TITLESPEED;
                              movefinish = true;
-                             MyTitleInvalidate(GameGrid[i, j]);
                          }
                          else
                          {
-                             GameGrid[i, j].y -= 2;
-                             GameGrid[i, j].Changed = true;
+                             GameGrid[i, j].y -= TITLESPEED;
                              movefinish = true;
-                             MyTitleInvalidate(GameGrid[i, j]);
                          }
                      }
                  }
+            Invalidate();
             return movefinish;
          }
 
         private bool Matches()
+        {              
+            bool suc = false;
+
+            FindMatches();
+
+            suc = FindCounts();
+
+            FillEmpty();            
+
+            NewTitles();
+
+            NewImages();
+
+            if (!suc)
+            {
+                GameFrames.Stop();
+            }
+
+            return suc;
+        }
+
+        private bool FindCounts()
         {
-            Random rand = new Random();
-            TPieces temp = new TPieces();
             bool suc = false;
 
             for (int i = 0; i <= GRIDSIZE - 1; i++)
-                for (int j = 0; j <= GRIDSIZE - 1; j++)          
-                {                    
-                    if (i != 0 && i != GRIDSIZE - 1)
-                    {
-                        if (GameGrid[i, j].kind != 5)
-                        {
-                            if (GameGrid[i, j].kind == GameGrid[i + 1, j].kind)
-                            {
-                                if (GameGrid[i, j].kind == GameGrid[i - 1, j].kind)
-                                {
-                                    for (int n = -1; n <= 1; n++)
-                                    {
-                                        if (GameGrid[i + n, j].count == 0)
-                                            GameGrid[i + n, j].count++;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    if (j != 0 && j != GRIDSIZE - 1)
-                    {
-                        if (GameGrid[i, j].kind != 5)
-                        {
-                            if (GameGrid[i, j].kind == GameGrid[i, j + 1].kind)
-                            {
-                                if (GameGrid[i, j].kind == GameGrid[i, j - 1].kind)
-                                {
-                                    for (int n = -1; n <= 1; n++)
-                                    {
-                                        if (GameGrid[i, j + n].count == 0)
-                                            GameGrid[i, j + n].count++;
-                                    }
-                                }
-                            }
-                        }
-                    }   
-                }
-
-            for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
-                    if (GameGrid[i, j].count == 1)
+                    if (GameGrid[i, j].Count)
                     {
-                        suc = true;                       
+                        suc = true;
                         TPieces title = GameGrid[i, j];
                         title.kind = 5;
-                        title.image = images.ElementAt(5);
-                        title.Changed = true;                        
-                        title.count--;
-                        Score_Update();
-                        MyTitleInvalidate(title);                      
+                        title.Count= false;
+                        ScoreUpdate();
+                        MyTitleInvalidate(title);
                     }
                 }
+            return suc;
+        }
 
+        private void FindMatches()
+        {
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
-                    if (GameGrid[i, j].kind == 5) 
+                    if (i != 0 && i != GRIDSIZE - 1 &&
+                        GameGrid[i, j].kind != 5 &&
+                        GameGrid[i, j].kind == GameGrid[i + 1, j].kind &&
+                        GameGrid[i, j].kind == GameGrid[i - 1, j].kind)
                     {
-                        for (int k = i; k > 0; k--)
+                        for (int n = -1; n <= 1; n++)
                         {
-                            temp.kind = GameGrid[k, j].kind;
-                            temp.image = GameGrid[k, j].image;
+                            if (!GameGrid[i + n, j].Count)
+                                GameGrid[i + n, j].Count = true;
+                        }
+                    }
 
-                            GameGrid[k, j].kind = GameGrid[k - 1, j].kind;
-                            GameGrid[k, j].image = GameGrid[k - 1, j].image;
-
-                            GameGrid[k - 1, j].kind = temp.kind;
-                            GameGrid[k - 1, j].image = temp.image;
-
-                            GameGrid[k, j].Changed = true;
-                            GameGrid[k - 1, j].Changed = true;
-                            MyTitleInvalidate(GameGrid[k, j]);
-                            MyTitleInvalidate(GameGrid[k - 1, j]);
+                    if (j != 0 && j != GRIDSIZE - 1 &&
+                        GameGrid[i, j].kind != 5 &&
+                        GameGrid[i, j].kind == GameGrid[i, j + 1].kind &&
+                        GameGrid[i, j].kind == GameGrid[i, j - 1].kind)
+                    {
+                        for (int n = -1; n <= 1; n++)
+                        {
+                            if (!GameGrid[i, j + n].Count)
+                                GameGrid[i, j + n].Count = true;
                         }
                     }
                 }
+        }
 
+        private void FillEmpty()
+        {
+            for(int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
+                {
+                    if (GameGrid[i, j].kind == 5)
+                    {
+                        for (int k = i - 1; k > 0; k--)
+                        {
+                            if (GameGrid[k, j].kind != 5)
+                            { 
+                            GameGrid[k, j].posneedy = GameGrid[i, j].y;
+                            GameGrid[i, j].y = GameGrid[k, j].y;
+                            GameGrid[i, j].kind = GameGrid[k, j].kind;
+                            GameGrid[k, j].kind = 5; 
+                            GameFrames2.Start();
+                            }
+                        }
+                    }
+                }
+        }
+
+        private void NewTitles()
+        {
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
                     if (GameGrid[i, j].kind == 5)
                     {
-                        GameGrid[i, j].kind = rand.Next(0, 4);
-                        GameGrid[i, j].image = images.ElementAt(GameGrid[i, j].kind);
-                        Thread.Sleep(10);
-                        Matches();
+                        GameGrid[i, j].kind = randomizer.Next(0, 4);
+                        GameGrid[i, j].y = 24;
+                        GameGrid[i, j].posneedy = 24 + i * TITLESIZE;
+                        GameFrames2.Start();
                     }
+                    
                 }
-
-            return suc;
         }
 
-        private void Timer1_Tick(object sender, EventArgs e)
+        private void NewImages()
+        {
+            for (int i = 0; i <= GRIDSIZE - 1; i++)
+                for (int j = 0; j <= GRIDSIZE - 1; j++)
+                {
+                    GameGrid[i, j].image = images.ElementAt(GameGrid[i, j].kind);
+                }
+        }
+
+        private void GameTimerTick(object sender, EventArgs e)
         {
             if (timeLeft > 0)
             {
@@ -368,27 +351,27 @@ namespace Match3Version20
             }
             else
             {
-                timer1.Stop();
+                GameTimer.Stop();
                 TimeLeft.Text = "Time's up!";
                 MessageBox.Show(Score.Text, "Game Over");
-                ExittoMenu();
+                ExitToMenu();
             }
         }
-        private void Score_Update()
+        private void ScoreUpdate()
         {            
             Score.Text = "Score: " + ++score;
         }
 
-        private void Gameframes_Tick(object sender, EventArgs e)
+        private void GameFramesTick(object sender, EventArgs e)
         {
             TitleMoves();
             if (!TitleMoves())
-            {
-                TimerStop();
+            {            
                 if (!Matches())
                 {
-                    int a = -1, b = -1, k = -1, l = -1;
-
+                    int a = -1, b = -1, k = -1, l = -1; 
+                    
+                    /* Find Swaped elements and write their pos in a, b, k, l  */
                     for (int i = 0; i <= GRIDSIZE - 1; i++)
                         for (int j = 0; j <= GRIDSIZE - 1; j++)
                         {
@@ -406,11 +389,12 @@ namespace Match3Version20
                                 }
                             }
                         }
-                    if (a != -1 & b != -1 & k != -1 & l != -1)
+                    if (a != -1 && b != -1 && k != -1 && l != -1)
                     {
+                        GameFrames.Stop();
                         GameGrid[a, b].Swaped = false;
                         GameGrid[k, l].Swaped = false;
-                        Swap_Tiles(a, b, k, l, false);
+                        SwapTiles(a, b, k, l, false);
                     }
                 }
                 else
@@ -426,11 +410,15 @@ namespace Match3Version20
                 }                
             }
         }
-
-        private void TimerStop()
+        
+        private void GameFrames2Tick(object sender, EventArgs e)
         {
-           
+            TitleMoves();
+            if (!TitleMoves())
+            {
+                GameFrames2.Stop();
+                Matches();
+            }
         }
     }
-
 }
