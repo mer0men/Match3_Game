@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-
+using System.Media;
 namespace Match3Version20
 {
     public partial class GamePlayForm : Form
@@ -12,9 +12,9 @@ namespace Match3Version20
         public const int TITLESIZE = 64;
         public const int TITLESPEED = TITLESIZE / 8 ;
         public const int CONERMARGIN = 24;
-
+        
         bool IsMoving = false;
-
+        SoundPlayer sp = new SoundPlayer(Properties.Resources.SoundTrack);
         public TPieces[,] GameGrid = new TPieces[GRIDSIZE, GRIDSIZE];
         List<Image> images = new List<Image>();
        
@@ -51,6 +51,7 @@ namespace Match3Version20
             Sform.Show();
             GameTimer.Stop();
             this.Hide();
+            sp.Stop();
         }
 
         private void GamePlayFormLoad(object sender, EventArgs e)
@@ -70,6 +71,7 @@ namespace Match3Version20
                 }
             this.Invalidate();  
             Matches();
+            sp.Play();
         }      
         
         private void GamePlayFormPaint(object sender, PaintEventArgs e)
