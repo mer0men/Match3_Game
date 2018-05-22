@@ -11,34 +11,34 @@ namespace Match3Version20
        
     public class TPieces
     {
-        public int x, y, row, col, kind, posneedx, posneedy;
+        public int X, Y, Row, Col, Kind, Posneedx, Posneedy;
 
         public bool Selected, Swaped, Count;
 
-        public Image image;
+        public Image Image;
 
-        public void Paint_Gems(object sender, PaintEventArgs e,  TPieces title)
+        public void PaintGems(object sender, PaintEventArgs e,  TPieces title)
         {
-            e.Graphics.DrawImage(title.image, new Point(title.x, title.y));
+            e.Graphics.DrawImage(title.Image, new Point(title.X, title.Y));
             if (title.Selected == true)
             {
-                e.Graphics.DrawRectangle(Pens.Black, title.x, title.y, 64, 64);
+                e.Graphics.DrawRectangle(Pens.Black, title.X, title.Y, 64, 64);
             }
         }
 
         public TPieces()
         {
-            x = 0;
-            y = 0;
-            row = 0;
-            col = 0;
-            kind = 0;
+            X = 0;
+            Y = 0;
+            Row = 0;
+            Col = 0;
+            Kind = 0;
             Count = false;
-            image = Properties.Resources.gem1;
+            Image = Properties.Resources.gem1;
             Selected = false;
             Swaped = false;
-            posneedx = x;
-            posneedy = y;
+            Posneedx = X;
+            Posneedy = Y;
         }
     }
 }

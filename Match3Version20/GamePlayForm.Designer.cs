@@ -35,7 +35,6 @@
             this.GameTimer = new System.Windows.Forms.Timer(this.components);
             this.Score = new System.Windows.Forms.Label();
             this.GameFrames = new System.Windows.Forms.Timer(this.components);
-            this.GameFrames2 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // ButMenuExit
@@ -73,13 +72,8 @@
             // 
             // GameFrames
             // 
-            this.GameFrames.Interval = 45;
+            this.GameFrames.Interval = 75;
             this.GameFrames.Tick += new System.EventHandler(this.GameFramesTick);
-            // 
-            // GameFrames2
-            // 
-            this.GameFrames2.Interval = 45;
-            this.GameFrames2.Tick += new System.EventHandler(this.GameFrames2Tick);
             // 
             // GamePlayForm
             // 
@@ -114,6 +108,5 @@
         private System.Windows.Forms.Timer GameTimer;
         private System.Windows.Forms.Label Score;
         private System.Windows.Forms.Timer GameFrames;
-        private System.Windows.Forms.Timer GameFrames2;
     }
 }
