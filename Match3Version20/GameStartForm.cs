@@ -31,7 +31,7 @@ namespace Match3Version20
         public void startgame()
         { 
             GamePlayForm Gform = new GamePlayForm();
-            Gform.Show();           
+            Gform.Show();        
             this.Hide();  
         }
 

@@ -85,6 +85,7 @@
             this.Controls.Add(this.Score);
             this.Controls.Add(this.TimeLeft);
             this.Controls.Add(this.ButMenuExit);
+            this.DoubleBuffered = true;
             this.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));

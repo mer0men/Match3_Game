@@ -18,7 +18,7 @@ namespace Match3Version20
         public TPieces[,] GameGrid = new TPieces[GRIDSIZE, GRIDSIZE];
         List<Image> images = new List<Image>();
        
-        Random randomizer = new Random();        
+        Random randomizer = new Random();
         int timeLeft = 60;
         int score;
        
@@ -49,11 +49,12 @@ namespace Match3Version20
         {
             GameWindow Sform = new GameWindow();
             Sform.Show();
+            GameTimer.Stop();
             this.Hide();
         }
 
         private void GamePlayFormLoad(object sender, EventArgs e)
-        {           
+        {          
             for (int i = 0; i <= GRIDSIZE - 1; i++)
                 for (int j = 0; j <= GRIDSIZE - 1; j++)
                 {
